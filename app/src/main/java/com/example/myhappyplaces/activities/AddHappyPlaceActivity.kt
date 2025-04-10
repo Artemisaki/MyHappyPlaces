@@ -1,6 +1,7 @@
 package com.example.myhappyplaces.activities
 
 import android.Manifest
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.ActivityNotFoundException
 import android.content.ContextWrapper
@@ -221,7 +222,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                     }
                     pictureDialog.show()
                 }
-            R.id.btn_save ->{
+            R.id.btn_save ->{ //TODO make the saved place appear on the list when you press save
                 val etTitle = findViewById<EditText>(R.id.et_title)
                 val etDescription = findViewById<EditText>(R.id.et_description)
                 val etLocation = findViewById<EditText>(R.id.et_location)
@@ -247,9 +248,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                             "Please select image",
                             Toast.LENGTH_LONG).show()
                     }else->{
-                    Toast.makeText(this@AddHappyPlaceActivity,
-                        "trying to save",
-                        Toast.LENGTH_LONG).show()
+
                         val happyPlaceModel = HappyPlaceModel(
                             0,
                             etTitle.text.toString(),
@@ -261,17 +260,11 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                             mLongitude
                         )
                         val dbHandler = DatabaseHandler(this)
-                    Toast.makeText(this@AddHappyPlaceActivity,
-                        "trying to save 2",
-                        Toast.LENGTH_LONG).show()
+
                         val addHappyPlace = dbHandler.addHappyPlace(happyPlaceModel)
-                    Toast.makeText(this@AddHappyPlaceActivity,
-                        "trying to save 3",
-                        Toast.LENGTH_LONG).show()
+
                         if(addHappyPlace > 0){
-                            Toast.makeText(this@AddHappyPlaceActivity,
-                                "the happy place details are inserted successfuly",
-                                Toast.LENGTH_LONG).show()
+                            setResult(Activity.RESULT_OK)
                             finish()
                         }
                     }
