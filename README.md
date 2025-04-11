@@ -25,9 +25,6 @@ A simple mobile app for storing and managing memorable places. Perfect for keepi
 
 ## 📱 Screenshots
 
-![App Screenshot](update_view.png)
-![App Screenshot](swipe_left.png)
-![App Screenshot](swipe_right.png)
 <p float="left">
   <img src="update_view.png" width="30%" />
   <img src="swipe_left.png" width="30%" />
