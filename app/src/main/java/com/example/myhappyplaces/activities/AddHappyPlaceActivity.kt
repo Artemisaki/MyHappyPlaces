@@ -20,6 +20,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
 import com.example.myhappyplaces.R
 import com.example.myhappyplaces.database.DatabaseHandler
@@ -46,6 +48,8 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
     private var mLatitude: Double = 0.0
     private var mLongitude: Double = 0.0
 
+    private var mHappyPlaceDetails: HappyPlaceModel?= null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -59,6 +63,11 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             onBackPressed()
         }
 
+        if(intent.hasExtra(MainActivity.EXTRA_PLACES_DETAILS)){
+            mHappyPlaceDetails = intent.getSerializableExtra(
+                MainActivity.EXTRA_PLACES_DETAILS) as HappyPlaceModel
+        }
+
         dateSetListener = DatePickerDialog.OnDateSetListener{
             view, year, month, dayOfMonth ->
             cal.set(Calendar.YEAR, year)
@@ -67,14 +76,42 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             updateDateInView()
         }
         updateDateInView()
-        val editTextDate = findViewById<EditText>(R.id.et_date)
-        editTextDate.setOnClickListener(this)
+
+
+
+        val etTitle = findViewById<AppCompatEditText>(R.id.et_title)
+        val etDescription = findViewById<AppCompatEditText>(R.id.et_description)
+        val etDate = findViewById<AppCompatEditText>(R.id.et_date)
+        val etLocation = findViewById<AppCompatEditText>(R.id.et_location)
+        val ivPlaceImage = findViewById<AppCompatImageView>(R.id.iv_place_image)
+        val btnSave = findViewById<Button>(R.id.btn_save)
+       // val toolbarText = findViewById<TextView>(R.id.toolbar_text)
+
+        if(mHappyPlaceDetails!= null) {
+            //toolbarText.text = "Edit Happy Place"
+            supportActionBar?.title = "Edit Happy Place"
+
+            etTitle.setText(mHappyPlaceDetails!!.title)
+            etDescription.setText(mHappyPlaceDetails!!.description)
+            etDate.setText(mHappyPlaceDetails!!.date)
+            etLocation.setText(mHappyPlaceDetails!!.location)
+            mLatitude = mHappyPlaceDetails!!.latitude
+            mLongitude = mHappyPlaceDetails!!.longitude
+
+            saveImageToInternalStorage = Uri.parse(mHappyPlaceDetails!!.image)
+
+            ivPlaceImage.setImageURI(saveImageToInternalStorage)
+            btnSave.text = "UPDATE"
+
+        }
+
+
+        etDate.setOnClickListener(this)
 
         val  addImageBtn= findViewById<TextView>(R.id.tv_add_image)
         addImageBtn.setOnClickListener(this)
 
-        val saveBtn = findViewById<Button>(R.id.btn_save)
-        saveBtn.setOnClickListener(this)
+        btnSave.setOnClickListener(this)
 
     }
 
@@ -222,7 +259,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                     }
                     pictureDialog.show()
                 }
-            R.id.btn_save ->{ //TODO make the saved place appear on the list when you press save
+            R.id.btn_save ->{ //TODO fix the saving place to appear on the list when you press save
                 val etTitle = findViewById<EditText>(R.id.et_title)
                 val etDescription = findViewById<EditText>(R.id.et_description)
                 val etLocation = findViewById<EditText>(R.id.et_location)
@@ -250,7 +287,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                     }else->{
 
                         val happyPlaceModel = HappyPlaceModel(
-                            0,
+                            if(mHappyPlaceDetails == null) 0 else mHappyPlaceDetails!!.id, //TODO
                             etTitle.text.toString(),
                             saveImageToInternalStorage.toString(),
                             etDescription.text.toString(),
@@ -261,12 +298,20 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
                         )
                         val dbHandler = DatabaseHandler(this)
 
-                        val addHappyPlace = dbHandler.addHappyPlace(happyPlaceModel)
-
-                        if(addHappyPlace > 0){
-                            setResult(Activity.RESULT_OK)
-                            finish()
+                        if(mHappyPlaceDetails == null){
+                            val addHappyPlace = dbHandler.addHappyPlace(happyPlaceModel)
+                            if(addHappyPlace > 0){
+                                setResult(Activity.RESULT_OK)
+                                finish()
+                            }
+                        }else{
+                            val updateHappyPlace = dbHandler.updateHappyPlace(happyPlaceModel)
+                            if(updateHappyPlace > 0){
+                                setResult(Activity.RESULT_OK)
+                                finish()
+                            }
                         }
+
                     }
                 }
             }

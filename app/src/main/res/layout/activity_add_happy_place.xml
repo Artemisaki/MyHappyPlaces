@@ -11,20 +11,22 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_add_activity"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="65dp"
         android:background="@color/blue"
         app:layout_constraintTop_toTopOf="parent"
         app:titleTextColor="@color/white"
         app:title=""
         >
 
-        <TextView
+       <!-- <TextView
+            android:id="@+id/toolbar_text"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:text="Add Happy Place"
             android:textColor="@color/white"
             android:textSize="22sp"/>
+        -->
 
     </androidx.appcompat.widget.Toolbar>
 

@@ -1,5 +1,7 @@
 package com.example.myhappyplaces.models
 
+import java.io.Serializable
+
 data class HappyPlaceModel(
     val id: Int,
     val title: String,
@@ -9,6 +11,5 @@ data class HappyPlaceModel(
     val location: String,
     val latitude: Double,
     val longitude: Double
-){
+): Serializable //for passing from one class to another parcelable < serializable (in time)
 
-}
